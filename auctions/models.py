@@ -10,8 +10,9 @@ class Auction(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=400)
     date = models.DateTimeField()
+    image = models.URLField()
+    price = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField()
 
 
 class Bid(models.Model):

@@ -3,10 +3,12 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
 
-from .models import User
+
+from .models import User, Auction, Bid, Comment
 from .forms import CreateForm
-
+from .util import is_valid_image
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -67,12 +69,28 @@ def register(request):
 def create(request):
     if request.method == "POST":
         form = CreateForm(request.POST, request.FILES)
+        
         if form.is_valid():
-            print(form.cleaned_data)
-
-            return HttpResponseRedirect(reverse("index"))
+            data = form.cleaned_data
+            user = User.objects.get(username=request.user)
+            if is_valid_image(data["image"]):
+                new_auction = Auction(
+user=user,
+title=data["title"], price=data["price"], description=data["description"], image=data["image"],
+date=timezone.now()
+                )
+                new_auction.save()
+                return HttpResponseRedirect(reverse("index"))
+            else:
+                return render(request, "auctions/create.html", {
+                "form": CreateForm(),
+                "message": "Invalid Image URL"
+            })
         else:
-            return render(request, "auctions/create.html", {"form": CreateForm()})
+            return render(request, "auctions/create.html", {
+                "form": CreateForm(),
+                "message": "Invalid Data"
+            })
         
     else:
         return render(request, "auctions/create.html", {"form": CreateForm()})
