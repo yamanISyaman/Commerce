@@ -11,7 +11,8 @@ from .forms import CreateForm
 from .util import is_valid_image
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Auction.objects.all()
+    return render(request, "auctions/index.html", {"listings": listings})
 
 
 def login_view(request):
@@ -76,9 +77,11 @@ def create(request):
             if is_valid_image(data["image"]):
                 new_auction = Auction(
 user=user,
-title=data["title"], price=data["price"], description=data["description"], image=data["image"],
-date=timezone.now()
-                )
+title=data["title"], 
+price=data["price"], 
+description=data["description"], 
+image=data["image"],
+date=timezone.now(), category=data["category"])
                 new_auction.save()
                 return HttpResponseRedirect(reverse("index"))
             else:

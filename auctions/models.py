@@ -12,6 +12,7 @@ class Auction(models.Model):
     date = models.DateTimeField()
     image = models.URLField()
     price = models.FloatField()
+    category = models.CharField(max_length=30)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
