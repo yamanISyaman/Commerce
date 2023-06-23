@@ -5,23 +5,35 @@
     <img src={{ auction.image }}>
     <h3>{{ auction.description }}</h3>
     <h1>${{ auction.price }}</h1>
-    <h4>number of bids</h4>
-    <div>
-        <form action="{% url 'bid' auction.id %}" method="post">
-            {% csrf_token %}
-            {{ bidform }}
-            {{ message }}
-            <input type="submit">
-        </form>
-    </div>
-    <div>
-        <form action="{% url 'comment' auction.id %}" method="post">
-            {% csrf_token %}
-            {{ commentform }}
-            {{ commentmessage }}
-            <input type="submit">
-        </form>
-    </div>
+    <h4>number of bids:</h4>
+    {% if not auction.closed %}
+        {% if close_input %}
+            <div>
+            <form action="{% url 'close_auction' auction.id %}" method="post">
+                {% csrf_token %}
+                    <input type="submit" value="Close">
+                </form>
+            </div>
+        {% endif %}
+        <div>
+            <form action="{% url 'bid' auction.id %}" method="post">
+                {% csrf_token %}
+                {{ bidform }}
+                {{ message }}
+                <input type="submit">
+            </form>
+        </div>
+        <div>
+            <form action="{% url 'comment' auction.id %}" method="post">
+                {% csrf_token %}
+                {{ commentform }}
+                {{ commentmessage }}
+                <input type="submit">
+            </form>
+        </div>
+    {% else %}
+        <h1> Winner: {{ auction.winner.username }}</h1>
+    {% endif %}
     <div>
         {% for comment in comments %}
             <h2> {{ comment.user.username }}</h2>

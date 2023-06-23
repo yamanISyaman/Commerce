@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from .models import User, Auction, Bid, Comment
 from .forms import CreateForm, BidForm, CommentForm
-from .util import is_valid_image
+from .util import is_valid_image, listing_attrs
 
 
 
@@ -105,20 +105,16 @@ date=timezone.now(), category=data["category"])
 
 def listing_view(request, id):
     auction = Auction.objects.filter(id=id)[0]
-    return render(request, "auctions/listing.html", {
-        "auction": auction,
-        "bidform": BidForm(),
-        "commentform": CommentForm(),
-        "comments": Comment.objects.filter(auction =auction)
-    })
+    return render(request, "auctions/listing.html", listing_attrs(auction, request.user))
+
 
 @login_required
 def add_bid(request, id):
     if request.method == "POST":
-        auction = Auction.objects.filter(id=id)[0]
+        auction = Auction.objects.get(id=id)
         user = User.objects.get(username=request.user)
         form = BidForm(request.POST)
-        if form.is_valid and int(request.POST.get("bid")) > auction.price:
+        if form.is_valid and float(request.POST.get("bid")) > auction.price:
             bid = request.POST.get("bid")
             new_bid = Bid(
                 price=bid,
@@ -132,13 +128,7 @@ def add_bid(request, id):
 
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "auctions/listing.html", {
-                "auction": auction,
-                "bidform": BidForm(),
-                "commentform": CommentForm(),
-                "comments": Comment.objects.filter(auction =auction),
-                "message": f"Your Bid Must Be More Than {auction.price}"
-    })
+            return render(request, "auctions/listing.html", listing_attrs(auction, request.user, bm=f"Your Bid Must Be More Than {auction.price}"))
             
 
 
@@ -146,7 +136,7 @@ def add_bid(request, id):
 def add_comment(request, id):
     if request.method == "POST":
         form = CommentForm(request.POST)
-        auction = Auction.objects.filter(id=id)[0]
+        auction = Auction.objects.get(id=id)
         user = User.objects.get(username=request.user)
         if form.is_valid:
             text = request.POST.get("comment")
@@ -157,20 +147,19 @@ def add_comment(request, id):
                 auction=auction
             )
             new_comment.save()
-            return render(request, "auctions/listing.html", {
-                "auction": auction,
-                "bidform": BidForm(),
-                "commentform": CommentForm(),
-                "comments": Comment.objects.filter(auction =auction)
-    })
+            return render(request, "auctions/listing.html", listing_attrs(auction, request.user))
 
         else:
-            return render(request, "auctions/listing.html", {
-                "auction": auction,
-                "bidform": BidForm(),
-                "commentform": CommentForm(),
-                "comments": Comment.objects.filter(auction =auction),
-                "commentmessage": "Inavlid comment"
-    })
+            return render(request, "auctions/listing.html", listing_attrs(auction, request.user, cm="INVALID COMMEMT"))
 
 
+def close_auction(request, id):
+    if request.method == "POST":
+        auction = Auction.objects.get(id=id)
+        winner = Bid.objects.get(auction=auction, price=auction.price).user
+        print(winner)
+        auction.closed = True
+        auction.winner = winner
+        auction.save()
+        return HttpResponseRedirect(reverse("index"))
+        

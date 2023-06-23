@@ -13,7 +13,9 @@ class Auction(models.Model):
     image = models.URLField()
     price = models.FloatField()
     category = models.CharField(max_length=30)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    closed = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+    winner = models.ForeignKey(User, null=True, default=None, on_delete=models.SET_NULL, related_name="winner")
 
 
 class Bid(models.Model):

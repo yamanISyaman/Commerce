@@ -58,6 +58,7 @@ class BidForm(forms.Form):
 class CommentForm(forms.Form):
     comment = forms.CharField(
         strip=True,
+        max_length=100,
         widget=forms.TextInput(attrs={
             "class": "form-control",
             "placeholder": "Comment",
