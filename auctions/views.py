@@ -190,7 +190,8 @@ def addto_wl(request, id):
 
 def rm_wl(request, id):
     if request.method == "POST":
-        #user = User.objects.get(username=request.user)
-        #auction = Auction.objects.get(id=id)
-        #wl = WatchList(user=user, auction=auction)
-        pass
+        user = User.objects.get(username=request.user)
+        auction = Auction.objects.get(id=id)
+        wl = WatchList.objects.get(user=user, auction=auction)
+        wl.delete()
+    return HttpResponseRedirect(reverse("watchlist"))
