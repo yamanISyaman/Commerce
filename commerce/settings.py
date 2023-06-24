@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "c3c9f323-7793-49a6-af34-78e3649dabe6.id.repl.co",
+    "commerce--justatestcode.repl.co"
 ]
 
 

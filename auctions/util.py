@@ -1,10 +1,10 @@
 import requests
-from .models import User, Auction, Bid, Comment
+from .models import User, Auction, Bid, Comment, WatchList
 from .forms import CreateForm, BidForm, CommentForm
 
 
 def is_valid_image(image_url):
-    image_formats = ("image/png", "image/jpeg", "image/jpg")
+    image_formats = ("image/png", "image/jpeg", "image/jpg", "image/svg")
     try:
         r = requests.head(image_url)
     except SSLError:
@@ -17,6 +17,7 @@ def is_valid_image(image_url):
 def listing_attrs(auction, username, bm=None, cm=None):
     owner = auction.user
     user = User.objects.get(username=username)
+    wl = WatchList.objects.filter(user=user, auction=auction)
     attrs = {
                 "auction": auction,
                 "close_input": False,
@@ -24,6 +25,7 @@ def listing_attrs(auction, username, bm=None, cm=None):
                 "commentform": CommentForm(),
                 "comments": Comment.objects.filter(auction =auction)
     }
+    attrs["in_wl"] = True if wl else False
     if cm:
         attrs["commentmessage"] = cm
     if bm:

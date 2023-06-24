@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 
-from .models import User, Auction, Bid, Comment
+from .models import User, Auction, Bid, Comment, WatchList
 from .forms import CreateForm, BidForm, CommentForm
 from .util import is_valid_image, listing_attrs
 
@@ -74,7 +74,6 @@ def register(request):
 def create(request):
     if request.method == "POST":
         form = CreateForm(request.POST)
-        
         if form.is_valid():
             data = form.cleaned_data
             user = User.objects.get(username=request.user)
@@ -85,17 +84,20 @@ title=data["title"],
 price=data["price"], 
 description=data["description"], 
 image=data["image"],
-date=timezone.now(), category=data["category"])
+date=timezone.now(), category=data["category"],
+winner=None,
+closed=False
+                )
                 new_auction.save()
                 return HttpResponseRedirect(reverse("index"))
             else:
                 return render(request, "auctions/create.html", {
-                "form": CreateForm(),
+                "form": form,
                 "message": "Invalid Image URL"
             })
         else:
             return render(request, "auctions/create.html", {
-                "form": CreateForm(),
+                "form": form,
                 "message": "Invalid Data"
             })
         
@@ -162,4 +164,33 @@ def close_auction(request, id):
         auction.winner = winner
         auction.save()
         return HttpResponseRedirect(reverse("index"))
-        
+
+@login_required
+def watchlist(request):
+    user = User.objects.get(username=request.user)
+    listings = WatchList.objects.filter(user=user)
+    return render(
+        request,
+        "auctions/watchlist.html",
+        {
+            "listings": [i.auction for i in listings]
+        }
+                 )
+
+
+@login_required
+def addto_wl(request, id):
+    if request.method == "POST":
+        user = User.objects.get(username=request.user)
+        auction = Auction.objects.get(id=id)
+        wl = WatchList(user=user, auction=auction)
+        wl.save()
+        return HttpResponseRedirect(reverse("watchlist"))
+
+
+def rm_wl(request, id):
+    if request.method == "POST":
+        #user = User.objects.get(username=request.user)
+        #auction = Auction.objects.get(id=id)
+        #wl = WatchList(user=user, auction=auction)
+        pass

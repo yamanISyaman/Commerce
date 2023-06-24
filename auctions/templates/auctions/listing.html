@@ -15,6 +15,21 @@
                 </form>
             </div>
         {% endif %}
+        {% if in_wl == False %}
+            <div>
+            <form action="{% url 'addtowl' auction.id %}" method="post">
+                {% csrf_token %}
+                    <input type="submit" value="Add To Watchlist">
+                </form>
+            </div>
+        {% elif in_wl %}
+            <div>
+            <form action="{% url 'rmwl' auction.id %}" method="post">
+                {% csrf_token %}
+                    <input type="submit" value="Remove From Watchlist">
+                </form>
+            </div>
+        {% endif %}
         <div>
             <form action="{% url 'bid' auction.id %}" method="post">
                 {% csrf_token %}

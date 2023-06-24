@@ -6,6 +6,7 @@ style = "width: 28vw;"
 class CreateForm(forms.Form):
     title = forms.CharField(
         strip=True,
+        max_length=100,
         widget=forms.TextInput(attrs={
             "class": "form-control",
             "placeholder": "Title",
@@ -20,6 +21,7 @@ class CreateForm(forms.Form):
         }))
     description = forms.CharField(
         strip=True,
+        max_length=400,
         widget=forms.Textarea(attrs={
             "class": "form-control",
             "placeholder": "Description",
