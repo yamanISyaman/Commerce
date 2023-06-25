@@ -19,11 +19,12 @@ def listing_attrs(auction, username, bm=None, cm=None):
     user = User.objects.get(username=username)
     wl = WatchList.objects.filter(user=user, auction=auction)
     attrs = {
-                "auction": auction,
-                "close_input": False,
-                "bidform": BidForm(),
-                "commentform": CommentForm(),
-                "comments": Comment.objects.filter(auction =auction)
+        "auction": auction,
+        "close_input": False,
+        "bidform": BidForm(),
+        "commentform": CommentForm(),
+        "comments": Comment.objects.filter(auction =auction),
+        "show_winner": False
     }
     attrs["in_wl"] = True if wl else False
     if cm:
@@ -32,6 +33,8 @@ def listing_attrs(auction, username, bm=None, cm=None):
         attrs["message"] = bm
     if user == owner:
         attrs["close_input"] = True
+    if user == auction.winner:
+        attrs["show_winner"] = True
 
     return attrs
 

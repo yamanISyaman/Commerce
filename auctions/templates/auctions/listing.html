@@ -47,7 +47,9 @@
             </form>
         </div>
     {% else %}
-        <h1> Winner: {{ auction.winner.username }}</h1>
+        {% if show_winner %}
+            <h1> You're The Winner, {{ auction.winner.username }}</h1>
+        {% endif %}
     {% endif %}
     <div>
         {% for comment in comments %}

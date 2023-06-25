@@ -35,11 +35,12 @@ class CreateForm(forms.Form):
         }))
     category = forms.ChoiceField(
         choices=[
-            ("None", "None"),
-            ("technical", "Technical"),
-            ("kitchen", "Kitchen"),
-            ("animals", "Animals"),
-            ("farm", "Farm")
+            ("Others", "Others"),
+            ("Technical", "Technical"),
+            ("Kitchen", "Kitchen"),
+            ("Animals", "Animals"),
+            ("Farm", "Farm"),
+            ("Kids", "Kids")
             ],
                                  widget=forms.Select(attrs={
                                      "class": "form-control",

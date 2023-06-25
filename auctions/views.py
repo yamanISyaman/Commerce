@@ -14,7 +14,7 @@ from .util import is_valid_image, listing_attrs
 
 
 def index(request):
-    listings = Auction.objects.all()
+    listings = Auction.objects.filter(closed=False)
     return render(request, "auctions/index.html", {"listings": listings})
 
 
@@ -131,8 +131,9 @@ def add_bid(request, id):
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/listing.html", listing_attrs(auction, request.user, bm=f"Your Bid Must Be More Than {auction.price}"))
-            
 
+    return HttpResponseRedirect(reverse("listing", args=[id]))
+            
 
 @login_required
 def add_comment(request, id):
@@ -153,8 +154,11 @@ def add_comment(request, id):
 
         else:
             return render(request, "auctions/listing.html", listing_attrs(auction, request.user, cm="INVALID COMMEMT"))
+            
+    return HttpResponseRedirect(reverse("listing", args=[id]))
 
 
+@login_required
 def close_auction(request, id):
     if request.method == "POST":
         auction = Auction.objects.get(id=id)
@@ -164,6 +168,8 @@ def close_auction(request, id):
         auction.winner = winner
         auction.save()
         return HttpResponseRedirect(reverse("index"))
+
+
 
 @login_required
 def watchlist(request):
@@ -188,6 +194,7 @@ def addto_wl(request, id):
         return HttpResponseRedirect(reverse("watchlist"))
 
 
+@login_required
 def rm_wl(request, id):
     if request.method == "POST":
         user = User.objects.get(username=request.user)
@@ -195,3 +202,21 @@ def rm_wl(request, id):
         wl = WatchList.objects.get(user=user, auction=auction)
         wl.delete()
     return HttpResponseRedirect(reverse("watchlist"))
+
+
+@login_required
+def ctgs_view(request):
+    ctgs = ["Others", "Technical", "Kitchen", "Animals", "Farm", "Kids"]
+    return render(
+        request,
+        "auctions/categories.html",
+        {
+            "ctgs": ctgs
+        }
+                 )
+
+
+@login_required
+def ctg_filter(request, ctg):
+    listings = Auction.objects.filter(category=ctg)
+    return render(request, "auctions/ctgpage.html", {"listings": listings})

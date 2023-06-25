@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories</h2>
+
+    {% for ctg in ctgs %}
+        <ul>
+            <li><a href="{% url 'ctg_filter' ctg %}">{{ ctg }}</a></li>
+        </ul>
+    {% endfor %}
+{% endblock %}

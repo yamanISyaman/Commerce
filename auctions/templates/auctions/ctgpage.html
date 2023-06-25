@@ -1,8 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>WatchList</h2>
-
+    <h2>Category Filtering</h2>
     {% if listings %}
         {% for listing in listings %}
             <a href="{% url 'listing' listing.id %}"><div>
@@ -13,6 +12,6 @@
             </div></a>
         {% endfor %}
     {% else %}
-        <h1>Your WatchList Is Empty, Go Add Some</h1>
+        <h2> No Results</h2>
     {% endif %}
 {% endblock %}
