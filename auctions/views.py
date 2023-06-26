@@ -105,8 +105,8 @@ closed=False
         return render(request, "auctions/create.html", {"form": CreateForm()})
 
 
-def listing_view(request, id):
-    auction = Auction.objects.filter(id=id)[0]
+def listing_view(request, id=1):
+    auction = Auction.objects.get(id=id)
     return render(request, "auctions/listing.html", listing_attrs(auction, request.user))
 
 

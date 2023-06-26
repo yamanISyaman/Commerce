@@ -15,22 +15,27 @@ def is_valid_image(image_url):
 
 
 def listing_attrs(auction, username, bm=None, cm=None):
-    owner = auction.user
-    user = User.objects.get(username=username)
-    wl = WatchList.objects.filter(user=user, auction=auction)
     attrs = {
         "auction": auction,
         "close_input": False,
         "bidform": BidForm(),
         "commentform": CommentForm(),
         "comments": Comment.objects.filter(auction =auction),
-        "show_winner": False
+        "show_winner": False,
+        "signed": True
+
     }
-    attrs["in_wl"] = True if wl else False
+    if not username.is_authenticated:
+        attrs["signed"] = False
+        return attrs
+    owner = auction.user
+    user = User.objects.get(username=username)
+    wl = WatchList.objects.filter(user=user, auction=auction)
     if cm:
         attrs["commentmessage"] = cm
     if bm:
         attrs["message"] = bm
+    attrs["in_wl"] = True if wl else False
     if user == owner:
         attrs["close_input"] = True
     if user == auction.winner:

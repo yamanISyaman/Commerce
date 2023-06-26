@@ -6,7 +6,7 @@
     <h3>{{ auction.description }}</h3>
     <h1>${{ auction.price }}</h1>
     <h4>number of bids:</h4>
-    {% if not auction.closed %}
+    {% if not auction.closed and signed %}
         {% if close_input %}
             <div>
             <form action="{% url 'close_auction' auction.id %}" method="post">
