@@ -4,14 +4,17 @@
     <h2>Category Filtering</h2>
     {% if listings %}
         {% for listing in listings %}
-            <a href="{% url 'listing' listing.id %}"><div>
-                <img src={{ listing.image }} alt={{ listing.title }} width="150" height="250">
-                <strong>{{ listing.title }}</strong>
-                <b>{{ listing.price }}$</b>
-                <b>{{ listing.description }}</b>
-            </div></a>
+            <a href="{% url 'listing' listing.id %}">
+        <div class="my-3 card" style="width: 25rem;">
+            <img src={{ listing.image }} class="card-img-top img-thumbnail" alt={{ listing.title }}>
+            <div class="card-body">
+            <h5 class="card-title">{{ listing.title }}</h5>
+            <p class="card-text">{{ listing.description }}</p>
+            <h5 class="card-title">Price: {{ listing.price }}$</h5>
+            </div>
+        </div></a>
         {% endfor %}
     {% else %}
-        <h2> No Results</h2>
+        <h2 class="text-danger"> No Results</h2>
     {% endif %}
 {% endblock %}

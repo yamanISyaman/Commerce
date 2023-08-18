@@ -1,61 +1,77 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listing: {{ auction.title }}</h2>
-    <img src={{ auction.image }}>
-    <h3>{{ auction.description }}</h3>
-    <h1>${{ auction.price }}</h1>
-    <h4>number of bids:</h4>
-    {% if not auction.closed and signed %}
-        {% if close_input %}
-            <div>
-            <form action="{% url 'close_auction' auction.id %}" method="post">
-                {% csrf_token %}
-                    <input type="submit" value="Close">
-                </form>
-            </div>
-        {% endif %}
-        {% if in_wl == False %}
-            <div>
-            <form action="{% url 'addtowl' auction.id %}" method="post">
-                {% csrf_token %}
-                    <input type="submit" value="Add To Watchlist">
-                </form>
-            </div>
-        {% elif in_wl %}
-            <div>
-            <form action="{% url 'rmwl' auction.id %}" method="post">
-                {% csrf_token %}
-                    <input type="submit" value="Remove From Watchlist">
-                </form>
-            </div>
-        {% endif %}
+    <div class="mb-3">
+        <h2>{{ auction.title }}</h2>
+        <img src={{ auction.image }} class="rounded" style="max-width: 40vw; height: auto;">
         <div>
-            <form action="{% url 'bid' auction.id %}" method="post">
-                {% csrf_token %}
-                {{ bidform }}
-                {{ message }}
-                <input type="submit">
-            </form>
+            <p class="lead">{{ auction.description }}</p>
+            <strong>Highest Price: ${{ auction.price }}</strong>
         </div>
-        <div>
-            <form action="{% url 'comment' auction.id %}" method="post">
-                {% csrf_token %}
-                {{ commentform }}
-                {{ commentmessage }}
-                <input type="submit">
-            </form>
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            {% if not auction.closed and signed %}
+                {% if close_input %}
+                    <div>
+                    <form action="{% url 'close_auction' auction.id %}" method="post">
+                        {% csrf_token %}
+                            <input type="submit" value="Close Listing" class="m-2 btn btn-outline-danger">
+                        </form>
+                    </div>
+                {% endif %}
+                {% if in_wl == False %}
+                    <div>
+                    <form action="{% url 'addtowl' auction.id %}" method="post">
+                        {% csrf_token %}
+                            <input type="submit" value="Add To Watchlist" class="m-2 btn btn-outline-success">
+                        </form>
+                    </div>
+                {% elif in_wl %}
+                    <div>
+                    <form action="{% url 'rmwl' auction.id %}" method="post">
+                        {% csrf_token %}
+                            <input type="submit" value="Remove From Watchlist" class="m-2 btn btn-outline-dark">
+                        </form>
+                    </div>
+                {% endif %}
         </div>
-    {% else %}
-        {% if show_winner %}
-            <h1> You're The Winner, {{ auction.winner.username }}</h1>
-        {% endif %}
-    {% endif %}
-    <div>
-        {% for comment in comments %}
-            <h2> {{ comment.user.username }}</h2>
-            <h4>{{ comment.text }}</h4>
-        {% endfor %}
+                {% if not close_input %}
+                    <div>
+                        <form action="{% url 'bid' auction.id %}" method="post">
+                            {% csrf_token %}
+                            {{ bidform }}
+                            {{ message }}
+                            <input type="submit" class="my-2 btn btn-success" value='Bid'>
+                        </form>
+                    </div>
+                {% endif %}
+            <div>
+                <form action="{% url 'comment' auction.id %}" method="post">
+                    {% csrf_token %}
+                    {{ commentform }}
+                    {{ commentmessage }}
+                    <input type="submit" class="my-2 btn btn-primary" value='Send'>
+                </form>
+            </div>
+            {% else %}
+                <div>
+                {% if show_winner %}
+                    <div style="display: block">
+                        <h1 class="text-info bg-dark" style="text-align: center;"> You're The Winner, {{ auction.winner.username }}</h1>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if comments %}
+                <div class="my-2">
+                    <h4>Comments:</h4>
+                    <ul class="list-group" style="max-width: 40vw;">
+                    {% for comment in comments %}
+                        <li class="list-group-item" style="word-wrap:break-word;"><b>{{ comment.user.username }}</b>
+                        <p>{{ comment.text }}</p></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                </div>
+            {% endif %}
     </div>
 
 {% endblock %}

@@ -2,10 +2,11 @@
 
 {% block body %}
     <h2>Categories</h2>
-
-    {% for ctg in ctgs %}
-        <ul>
-            <li><a href="{% url 'ctg_filter' ctg %}">{{ ctg }}</a></li>
-        </ul>
-    {% endfor %}
+    <ul class="list-group">
+        {% for ctg in ctgs %}
+            <a href="{% url 'ctg_filter' ctg %}">
+                <li class="list-group-item list-group-item-info" style="max-width: 30vw; text-align: center;">{{ ctg }}</li>
+            </a>
+        {% endfor %}
+    </ul>
 {% endblock %}

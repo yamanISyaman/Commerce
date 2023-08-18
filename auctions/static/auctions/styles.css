@@ -1,3 +1,13 @@
 body {
     padding: 10px;
 }
+
+.itembox {margin: 15px 0 0 0;
+    text-align: right;
+                }
+
+.precover {
+    border-radius: 0 2px 2px 0;
+    border: none !important;     
+    padding: 0 !important;
+        }
