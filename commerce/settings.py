@@ -26,8 +26,7 @@ SECRET_KEY = '6ps8j!crjgrxt34cqbqn7x&b3y%(fny8k8nh21+qa)%ws3fh!q'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "c3c9f323-7793-49a6-af34-78e3649dabe6.id.repl.co",
-    "commerce--justatestcode.repl.co"
+    "*"
 ]
 
 
